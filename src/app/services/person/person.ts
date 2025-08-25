@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 
 export class Person {
-  private url: string = 'http://localhost:3000/personas';
+  private url: string = 'http://localhost:8080/api/personas';
 
   constructor(private readonly http: HttpClient) { }
 

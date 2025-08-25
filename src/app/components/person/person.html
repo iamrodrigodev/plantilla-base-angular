@@ -2,7 +2,7 @@
   <h1 class="text-center mb-4">Gestión de Personas</h1>
 
   <!-- Botón para abrir modal de crear persona -->
-  <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#crearPersonaModal">
+  <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#crearPersonaModal" autofocus>
     + Crear Persona
   </button>
 
@@ -26,7 +26,7 @@
           <td>{{ persona.edad }}</td>
           <td>
             <!-- Botón editar -->
-            <button class="btn btn-warning btn-sm me-2" (click)="abrirEditar(persona)">
+            <button class="btn btn-warning btn-sm me-2" (click)="abrirEditar(persona)" autofocus>
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                 class="bi bi-pencil-square" viewBox="0 0 16 16">
                 <path
@@ -39,7 +39,7 @@
             </button>
 
             <!-- Botón eliminar -->
-            <button class="btn btn-danger btn-sm" (click)="abrirEliminar(persona)">
+            <button class="btn btn-danger btn-sm" (click)="abrirEliminar(persona)" autofocus>
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                 class="bi bi-trash" viewBox="0 0 16 16">
                 <path

@@ -42,43 +42,73 @@ export class PersonComponent implements OnInit {
 
   abrirEditar(persona: Persona): void {
     this.personaSeleccionada = { ...persona };
+    this.editarForm.setValue({
+      nombre: persona.nombre,
+      apellido: persona.apellido,
+      edad: persona.edad
+    });
+    const modal = document.getElementById('editarPersonaModal');
+    if (modal) {
+      (window as any).bootstrap?.Modal.getOrCreateInstance(modal)?.show();
+    }
   }
 
   abrirEliminar(persona: Persona): void {
     this.personaSeleccionada = { ...persona };
+    const modal = document.getElementById('eliminarPersonaModal');
+    if (modal) {
+      (window as any).bootstrap?.Modal.getOrCreateInstance(modal)?.show();
+    }
   }
 
   ngOnInit(): void {
-    this.getPersonsAll();
+  this.getPersonsAll();
   }
 
   getPersonsAll(): void {
     this.personService.getAllPersons().subscribe({
-      next: (dato) => {
-        this.persons = dato;
-      },
-      error: (error) => {
-        console.error('Error al obtener todas las personas:', error);
-      }
-    });
+    next: (resp: any) => {
+          if (Array.isArray(resp)) {
+            this.persons = resp;
+          } else if (resp && Array.isArray(resp.dato)) {
+            this.persons = resp.dato;
+          } else {
+            this.persons = [];
+          }
+        },
+        error: (error) => {
+          this.persons = [];
+          console.error('Error al obtener todas las personas:', error);
+        }
+      });
   }
 
   createPerson(): void {
-    this.personService.createPerson(this.nuevaPersona).subscribe({
-      next: (dato) => {
-        this.persons.push(dato);
-      },
-      error: (error) => {
-        console.error('Error al crear una persona:', error);
-      }
-    });
-  }
+  const body = this.crearForm.value;
+  this.personService.createPerson(body).subscribe({
+    next: () => {
+      const modal = document.getElementById('crearPersonaModal');
+          if (modal) {
+            (window as any).bootstrap?.Modal.getOrCreateInstance(modal)?.hide();
+          }
+      this.getPersonsAll();
+      this.crearForm.reset();
+    },
+    error: (error) => {
+      console.error('Error al crear una persona:', error);
+    }
+  });
+}
 
   updatePerson(): void {
-    if (!this.personaSeleccionada) return;
-    this.personService.updatePerson(this.personaSeleccionada.id, this.personaSeleccionada).subscribe({
-      next: (dato) => {
-        this.getPersonsAll();
+  const body = this.editarForm.value;
+  this.personService.updatePerson(this.personaSeleccionada!.id, body).subscribe({
+        next: () => {
+          this.getPersonsAll();
+          const modal = document.getElementById('editarPersonaModal');
+          if (modal) {
+            (window as any).bootstrap?.Modal.getOrCreateInstance(modal)?.hide();
+          }
       },
       error: (error) => {
         console.error('Error al actualizar la persona:', error);
@@ -90,6 +120,10 @@ export class PersonComponent implements OnInit {
     if (!this.personaSeleccionada) return;
     this.personService.deletePerson(this.personaSeleccionada.id).subscribe({
       next: () => {
+        const modal = document.getElementById('eliminarPersonaModal');
+        if (modal) {
+          (window as any).bootstrap?.Modal.getOrCreateInstance(modal)?.hide();
+        }
         this.getPersonsAll();
       },
       error: (error) => {
